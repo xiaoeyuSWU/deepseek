@@ -201,7 +201,7 @@
         <div id="chat-messages"></div>
     </div>
     <div id="chat-input-container">
-        <input type="text" id="chat-input" placeholder="输入消息...（更多功能考完电路和大物再开发...）">
+        <input type="text" id="chat-input" placeholder="键入消息...(更多功能考完电路大物再开发)">
         <button id="send-button">发送</button>
     </div>
 
@@ -225,7 +225,7 @@
         document.addEventListener('click', (e) => {
             const heart = document.createElement('div');
             heart.className = 'heart-animation';
-            heart.innerHTML = '🌾❤️🍇';
+            heart.innerHTML = '❤️';
             heart.style.left = `${e.pageX - 10}px`;
             heart.style.top = `${e.pageY - 10}px`;
             document.body.appendChild(heart);
