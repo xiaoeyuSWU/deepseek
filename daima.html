@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DeepSeek 智能助手</title>
+    <title>小鳄鱼swu的 DeepSeek 智能助手</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.6/marked.min.js"></script>
     <style>
         :root {
@@ -35,6 +35,7 @@
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
+            padding-bottom: 120px; /* 新增底部间距 */
         }
 
         #chat-messages {
@@ -46,26 +47,34 @@
             border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 1rem;
+            padding-bottom: 60px; /* 防止消息被遮挡 */
         }
-
+        
         .message {
             margin: 0.75rem 0;
-            padding: 1rem 1.25rem;
+            padding: 0.6rem 1rem; /* 减小内边距 */
             border-radius: 1.25rem;
-            max-width: 80%;
+            width: fit-content;
+            max-width: min(75%, 550px); /* 统一最大宽度 */
+            min-width: 60px;
             line-height: 1.6;
             animation: fadeIn 0.3s ease-in;
             position: relative;
             font-size: 0.9375rem;
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
 
+        /* 用户消息 */
         .message.user {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             margin-left: auto;
             border-bottom-right-radius: 4px;
+            padding: 0.6rem 1rem; /* 保持与基础一致 */
         }
 
+        /* 机器人消息 */
         .message.bot {
             background: var(--card-bg);
             color: #334155;
@@ -74,6 +83,20 @@
             border: 1px solid #e2e8f0;
             border-bottom-left-radius: 4px;
         }
+
+        /* 移动端适配修改 */
+        @media (max-width: 640px) {
+            .message {
+                max-width: min(85%, 100%) !important; /* 统一移动端宽度 */
+                min-width: 40px !important;
+                font-size: 0.875rem;
+                padding: 0.5rem 0.8rem; /* 减小移动端内边距 */
+            }
+            
+
+        }
+
+
 
         .message.loading {
             background: #f8fafc;
@@ -105,8 +128,15 @@
             gap: 0.75rem;
             padding: 1rem;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: fixed; /* 固定定位 */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 100;
         }
 
         #chat-input {
@@ -193,15 +223,43 @@
             0% { transform: translateY(0) scale(1); opacity: 1; }
             100% { transform: translateY(-100vh) scale(0); opacity: 0; }
         }
+
+
+                /* 手机端适配 */
+                @media (max-width: 640px) {
+            #chat-container {
+                padding: 8px;
+                padding-bottom: 100px;
+            }
+            
+            #chat-input-container {
+                border-radius: 12px 12px 0 0;
+                padding: 12px;
+            }
+            
+            #send-button {
+                padding: 12px 16px;
+            }
+
+            #chat-messages {
+                padding-bottom: 40px;
+                border-radius: 12px;
+            }
+
+            .message {
+                max-width: 90%;
+                font-size: 0.875rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="chat-container">
-        <button id="deep-thought-button">✨ 深度思考模式 R1</button>
+        <button id="deep-thought-button">✨ 点击切换深度思考模式 R1</button>
         <div id="chat-messages"></div>
     </div>
     <div id="chat-input-container">
-        <input type="text" id="chat-input" placeholder="输入消息...（支持 Markdown 格式）">
+        <input type="text" id="chat-input" placeholder="键入消息...(更多功能考完电路大物再开发)">
         <button id="send-button">发送</button>
     </div>
 
@@ -210,7 +268,7 @@
         let chatHistory = [
             {
                 role: "system",
-                content: "你是一个专业、友好的智能助手，使用简洁易懂的现代中文进行交流，支持 Markdown 格式。"
+                content: "你是一个专业、友好的智能助手，使用简洁易懂的语言交流，请注意你的回答必须通俗易懂而且简短。"
             }
         ];
 
@@ -236,7 +294,7 @@
         deepThoughtButton.addEventListener('click', () => {
             isDeepThought = !isDeepThought;
             deepThoughtButton.classList.toggle('active', isDeepThought);
-            deepThoughtButton.textContent = isDeepThought ? '🚀 深度思考已激活' : '✨ 深度思考模式 R1';
+            deepThoughtButton.textContent = isDeepThought ? '🚀 深度思考已激活' : '✨ 点击切换深度思考模式 R1';
         });
 
         // 修改后的发送消息逻辑
