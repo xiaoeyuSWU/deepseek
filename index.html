@@ -52,13 +52,51 @@
         
         .message {
             margin: 0.75rem 0;
-            padding: 1rem 1.25rem;
+            padding: 0.8rem 1.2rem; /* 调整内边距 */
             border-radius: 1.25rem;
-            max-width: 80%;
+            width: fit-content; /* 新增：宽度自适应内容 */
+            max-width: min(85%, 600px); /* 修改：双重限制宽度 */
+            min-width: 120px; /* 新增：最小宽度限制 */
             line-height: 1.6;
             animation: fadeIn 0.3s ease-in;
             position: relative;
             font-size: 0.9375rem;
+            word-break: break-word; /* 新增：长单词换行 */
+            overflow-wrap: anywhere; /* 新增：任意位置换行 */
+        }
+
+        /* 单独调整用户消息样式 */
+        .message.user {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+            max-width: min(75%, 550px); /* 用户消息稍窄 */
+        }
+
+        /* 机器人消息样式 */
+        .message.bot {
+            background: var(--card-bg);
+            color: #334155;
+            margin-right: auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+            max-width: min(85%, 600px); /* 保持原有设置 */
+        }
+
+        /* 移动端适配修改 */
+        @media (max-width: 640px) {
+            .message {
+                max-width: min(90%, 100%) !important; /* 强制覆盖 */
+                min-width: 80px; /* 更小的最小宽度 */
+                font-size: 0.875rem;
+                padding: 0.7rem 1rem; /* 调整移动端内边距 */
+            }
+            
+            .message.user {
+                max-width: min(85%, 100%) !important; /* 用户消息稍宽 */
+            }
         }
 
         .message.user {
