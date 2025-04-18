@@ -234,7 +234,7 @@
 </head>
 <body>
     <div id="chat-container">
-        <button id="deep-thought-button">✨ 深度思考模式 R1</button>
+        <button id="deep-thought-button">✨ 点击切换深度思考模式 R1</button>
         <div id="chat-messages"></div>
     </div>
     <div id="chat-input-container">
@@ -273,7 +273,7 @@
         deepThoughtButton.addEventListener('click', () => {
             isDeepThought = !isDeepThought;
             deepThoughtButton.classList.toggle('active', isDeepThought);
-            deepThoughtButton.textContent = isDeepThought ? '🚀 深度思考已激活' : '✨ 深度思考模式 R1';
+            deepThoughtButton.textContent = isDeepThought ? '🚀 深度思考已激活' : '✨ 点击切换深度思考模式 R1';
         });
 
         // 修改后的发送消息逻辑
