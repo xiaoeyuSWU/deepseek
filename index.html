@@ -35,17 +35,18 @@
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
+            padding-bottom: 120px
         }
 
         #chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            scroll-behavior: smooth;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 1rem;
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0)); /* 新增 */
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
         }
 
         .message {
@@ -101,12 +102,19 @@
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         #chat-input-container {
-            display: flex;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        position: fixed;                           /* 新增：固定定位 */
+        bottom: env(safe-area-inset-bottom, 0);     /* iOS 安全区兼容，也可直接写 bottom: 0; */
+        left: 50%;                                 /* 水平居中 */
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 800px;
+        padding: 1rem;                             /* 保持原来内边距 */
+        background: var(--card-bg);                /* 保持原来背景 */
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        z-index: 10;                               /* 置顶 */
+        display: flex;
+        gap: 0.75rem;
         }
 
         #chat-input {
