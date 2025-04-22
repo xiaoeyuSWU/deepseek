@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小鳄鱼swu的 DeepSeek 智能助手</title>
+    <title>DeepSeek智能助手@SWU</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.6/marked.min.js"></script>
     <style>
         :root {
@@ -100,33 +100,20 @@
         }
         
         .message {
-            margin: 0.4rem 0; /* ⬅️ 上下间距稍微再减小，使整体对话更紧凑 */
-            padding: 0.4rem 1.1rem; /* ⬅️ 内容内边距更紧凑，尤其是上下方向缩小为0.4rem */
+            margin: 0.4rem 0;
+            padding: 0.8rem 1.2rem;
             border-radius: 1.25rem;
             width: fit-content;
             max-width: min(78%, 600px);
             min-width: 60px;
-
-            /* ✅ 调整最小高度以减少气泡的竖直占位 */
-            min-height: 32px; /* ⬅️ 原为40px，现在缩小为32px，进一步减少竖直空间 */
-
-            line-height: 1.4; /* ⬅️ 略微减小行距，让文本更贴合气泡边缘 */
-            font-size: 0.88rem; /* ⬅️ 字体略微变小，保持阅读体验同时省空间 */
+            line-height: 1.5;
+            font-size: 0.95rem;
             word-break: break-word;
             overflow-wrap: anywhere;
-            display: flex;
-            align-items: center;
-
-            /* 🎯 动画与定位保持不变 */
+            display: block; /* 关键修改 */
             animation: fadeIn 0.3s ease-in;
             position: relative;
         }
-
-        /* 📌 竖直方向高度调整说明：
-        - padding 控制文本内容与气泡边缘的上下间距；
-        - min-height 控制气泡最小高度，防止过小导致排版混乱；
-        - line-height 控制文字行之间的距离；
-        三者配合实现对话气泡更紧凑、整洁的外观。 */
 
 
 
@@ -357,7 +344,7 @@
         let chatHistory = [
             {
                 role: "system",
-                content: "你是一个专业、友好的智能助手，使用简洁易懂的语言交流，请注意你的回答必须通俗易懂而且简短。"
+                content: "你使用友善、活泼且简洁易懂的语言交流。请注意你的回答必须是markdown格式。"
             }
         ];
         let currentSessionId = Date.now().toString();
@@ -380,7 +367,7 @@
             currentSessionId = Date.now().toString();
             chatHistory = [{
                 role: "system",
-                content: "你是一个专业、友好的智能助手，使用简洁易懂的语言交流，请注意你的回答必须通俗易懂而且简短。"
+                content: "你使用友善、活泼且简洁易懂的语言交流。请注意你的回答必须是markdown格式。"
             }];
             chatMessages.innerHTML = '';
             chatInput.value = '';
