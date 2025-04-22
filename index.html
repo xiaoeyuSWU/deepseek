@@ -106,12 +106,15 @@
             width: fit-content;
             max-width: min(78%, 600px);
             min-width: 60px;
+            min-height: 50px;
             line-height: 1.6;
             animation: fadeIn 0.3s ease-in;
             position: relative;
             font-size: 0.9375rem;
             word-break: break-word;
             overflow-wrap: anywhere;
+            display: flex;
+            align-items: center;
         }
 
         .message.user {
@@ -215,20 +218,20 @@
         /* 历史记录面板样式 */
         #history-panel {
             position: fixed;
-            left: -300px;
+            left: -280px;
             top: 0;
             width: 280px;
             height: 100vh;
             background: var(--card-bg);
             box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            transition: left 0.3s ease;
             padding: 1rem;
             z-index: 1100;
             margin-top: 60px;
         }
 
         #history-panel.active {
-            transform: translateX(300px);
+            left: 0;
         }
 
         .history-header {
@@ -317,7 +320,7 @@
                 if (existingIndex > -1) {
                     sessions[existingIndex] = sessionData;
                 } else {
-                    sessions.push(sessionData);
+                    sessions.unshift(sessionData); // 新会话添加到数组开头
                 }
 
                 localStorage.setItem('chatSessions', JSON.stringify(sessions));
@@ -358,22 +361,16 @@
 
         // 新会话功能
         newChatBtn.addEventListener('click', () => {
-            // 保存当前会话
             StorageManager.saveCurrentSession();
-            
-            // 创建新会话
             currentSessionId = Date.now().toString();
             chatHistory = [{
                 role: "system",
                 content: "你是一个专业、友好的智能助手，使用简洁易懂的语言交流，请注意你的回答必须通俗易懂而且简短。"
             }];
-            
-            // 清空界面
             chatMessages.innerHTML = '';
             chatInput.value = '';
         });
 
-        // 其他事件监听...
         deepThoughtButton.addEventListener('click', () => {
             isDeepThought = !isDeepThought;
             deepThoughtButton.textContent = isDeepThought 
@@ -382,8 +379,10 @@
         });
 
         showHistoryBtn.addEventListener('click', () => {
-            historyPanel.classList.add('active');
-            loadHistoryList();
+            historyPanel.classList.toggle('active');
+            if (historyPanel.classList.contains('active')) {
+                loadHistoryList();
+            }
         });
 
         closeHistoryBtn.addEventListener('click', () => {
@@ -430,7 +429,6 @@
             }
         }
 
-        // 其余函数保持不变...
         async function sendMessageToDeepSeek(model, messages) {
             const apiKey = 'sk-b485211331ef4dc69505fca300bbc5e9';
             const response = await fetch('https://api.deepseek.com/chat/completions', {
@@ -503,7 +501,7 @@
         window.addEventListener('load', () => {
             const sessions = StorageManager.getSessions();
             if (sessions.length > 0) {
-                loadSession(sessions[sessions.length - 1]);
+                loadSession(sessions[0]); // 加载最新会话
             }
         });
     </script>
