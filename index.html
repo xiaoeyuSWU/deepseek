@@ -100,22 +100,35 @@
         }
         
         .message {
-            margin: 0.75rem 0;
-            padding: 0.8rem 1.2rem;
+            margin: 0.4rem 0; /* ⬅️ 上下间距稍微再减小，使整体对话更紧凑 */
+            padding: 0.4rem 1.1rem; /* ⬅️ 内容内边距更紧凑，尤其是上下方向缩小为0.4rem */
             border-radius: 1.25rem;
             width: fit-content;
             max-width: min(78%, 600px);
             min-width: 60px;
-            min-height: 50px;
-            line-height: 1.6;
-            animation: fadeIn 0.3s ease-in;
-            position: relative;
-            font-size: 0.9375rem;
+
+            /* ✅ 调整最小高度以减少气泡的竖直占位 */
+            min-height: 32px; /* ⬅️ 原为40px，现在缩小为32px，进一步减少竖直空间 */
+
+            line-height: 1.4; /* ⬅️ 略微减小行距，让文本更贴合气泡边缘 */
+            font-size: 0.88rem; /* ⬅️ 字体略微变小，保持阅读体验同时省空间 */
             word-break: break-word;
             overflow-wrap: anywhere;
             display: flex;
             align-items: center;
+
+            /* 🎯 动画与定位保持不变 */
+            animation: fadeIn 0.3s ease-in;
+            position: relative;
         }
+
+        /* 📌 竖直方向高度调整说明：
+        - padding 控制文本内容与气泡边缘的上下间距；
+        - min-height 控制气泡最小高度，防止过小导致排版混乱；
+        - line-height 控制文字行之间的距离；
+        三者配合实现对话气泡更紧凑、整洁的外观。 */
+
+
 
         .message.user {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
