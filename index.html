@@ -217,22 +217,24 @@
 
         /* 历史记录面板样式 */
         #history-panel {
+            display: none; /* 初始完全隐藏 */
             position: fixed;
-            left: -280px;
             top: 0;
+            left: 0;
             width: 280px;
             height: 100vh;
             background: var(--card-bg);
             box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-            transition: left 0.3s ease;
             padding: 1rem;
             z-index: 1100;
             margin-top: 60px;
         }
 
+
         #history-panel.active {
-            left: 0;
+            display: block;
         }
+
 
         .history-header {
             display: flex;
