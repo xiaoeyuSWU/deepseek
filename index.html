@@ -344,7 +344,7 @@
         let chatHistory = [
             {
                 role: "system",
-                content: "你使用友善、活泼且简洁易懂的语言交流。请注意你的回答必须是markdown格式。"
+                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
             }
         ];
         let currentSessionId = Date.now().toString();
@@ -367,7 +367,7 @@
             currentSessionId = Date.now().toString();
             chatHistory = [{
                 role: "system",
-                content: "你使用友善、活泼且简洁易懂的语言交流。请注意你的回答必须是markdown格式。"
+                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
             }];
             chatMessages.innerHTML = '';
             chatInput.value = '';
