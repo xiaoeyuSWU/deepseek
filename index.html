@@ -73,6 +73,11 @@
             color: white;
         }
 
+        #search-toggle {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
         #chat-container {
             flex: 1;
             display: flex;
@@ -83,7 +88,7 @@
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
-            padding-top: 70px; /* 顶部导航栏高度 */
+            padding-top: 70px;
             padding-bottom: 120px;
         }
 
@@ -110,12 +115,10 @@
             font-size: 0.95rem;
             word-break: break-word;
             overflow-wrap: anywhere;
-            display: block; /* 关键修改 */
+            display: block;
             animation: fadeIn 0.3s ease-in;
             position: relative;
         }
-
-
 
         .message.user {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -215,9 +218,8 @@
             min-width: 80px;
         }
 
-        /* 历史记录面板样式 */
         #history-panel {
-            display: none; /* 初始完全隐藏 */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -228,15 +230,12 @@
             padding: 1rem;
             z-index: 1100;
             margin-top: 60px;
-            overflow-y: auto; /* ✅ 允许滚动 */
-
+            overflow-y: auto;
         }
-
 
         #history-panel.active {
             display: block;
         }
-
 
         .history-header {
             display: flex;
@@ -283,6 +282,7 @@
         <div class="nav-buttons">
             <button class="nav-button" id="new-chat">🆕 新会话</button>
             <button class="nav-button" id="show-history">📜 历史记录</button>
+            <button class="nav-button" id="search-toggle">🔍 联网搜索 Off</button>
         </div>
         <button class="nav-button" id="deep-thought-button">✨ 深度思考模式 R1</button>
     </div>
@@ -324,7 +324,7 @@
                 if (existingIndex > -1) {
                     sessions[existingIndex] = sessionData;
                 } else {
-                    sessions.unshift(sessionData); // 新会话添加到数组开头
+                    sessions.unshift(sessionData);
                 }
 
                 localStorage.setItem('chatSessions', JSON.stringify(sessions));
@@ -343,13 +343,20 @@
             }
         };
 
+        const SERPAPI_KEY = 'b27c0c96e20059056e3e31d3fd6cb771647808901261673c658ef340df5bbfa2'; // 在此处替换你的密钥
         let chatHistory = [
             {
                 role: "system",
-                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
+                content: "你是一个智能助手，当用户启用联网搜索时，你会先获取实时网络信息。请遵循以下规则：\n" +
+                         "1. 当看到【联网搜索上下文】时，优先使用搜索结果中的信息回答\n" +
+                         "2. 保持回答简洁自然，用口语化中文回复\n" +
+                         "3. 重要数据需标注来源（使用[来源x]格式）\n" +
+                         "4. 使用Markdown格式，适当使用emoji"
             }
         ];
         let currentSessionId = Date.now().toString();
+        let isDeepThought = false;
+        let isSearchEnabled = false;
 
         // DOM元素
         const deepThoughtButton = document.getElementById('deep-thought-button');
@@ -360,16 +367,19 @@
         const showHistoryBtn = document.getElementById('show-history');
         const closeHistoryBtn = document.getElementById('close-history');
         const newChatBtn = document.getElementById('new-chat');
+        const searchToggleBtn = document.getElementById('search-toggle');
 
-        let isDeepThought = false;
-
-        // 新会话功能
+        // 事件监听
         newChatBtn.addEventListener('click', () => {
             StorageManager.saveCurrentSession();
             currentSessionId = Date.now().toString();
             chatHistory = [{
                 role: "system",
-                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
+                content: "你是一个智能助手，当用户启用联网搜索时，你会先获取实时网络信息。请遵循以下规则：\n" +
+                         "1. 当看到【联网搜索上下文】时，优先使用搜索结果中的信息回答\n" +
+                         "2. 保持回答简洁自然，用口语化中文回复\n" +
+                         "3. 重要数据需标注来源（使用[来源x]格式）\n" +
+                         "4. 使用Markdown格式，适当使用emoji"
             }];
             chatMessages.innerHTML = '';
             chatInput.value = '';
@@ -380,6 +390,14 @@
             deepThoughtButton.textContent = isDeepThought 
                 ? '🚀 深度思考已激活' 
                 : '✨ 深度思考模式 R1';
+        });
+
+        searchToggleBtn.addEventListener('click', () => {
+            isSearchEnabled = !isSearchEnabled;
+            searchToggleBtn.textContent = isSearchEnabled ? '🌐 联网搜索 On' : '🔍 联网搜索 Off';
+            searchToggleBtn.style.background = isSearchEnabled 
+                ? 'linear-gradient(135deg, #10b981, #059669)'
+                : 'linear-gradient(135deg, #f59e0b, #d97706)';
         });
 
         showHistoryBtn.addEventListener('click', () => {
@@ -412,13 +430,24 @@
             const loadingMessage = appendMessage('loading', 
                 `<div class="loading-dots">
                     ${isDeepThought ? '深度思考中' : '生成中'} 
+                    ${isSearchEnabled ? '（联网搜索中...）' : ''}
                     <span></span><span></span><span></span>
                 </div>`
             );
 
             try {
+                let finalMessage = userMessage;
+                
+                if (isSearchEnabled) {
+                    const searchResults = await performWebSearch(userMessage);
+                    finalMessage = `【联网搜索上下文】\n${JSON.stringify(searchResults)}\n\n【用户问题】\n${userMessage}`;
+                }
+
+                const tempMessages = [...chatHistory];
+                tempMessages[tempMessages.length - 1].content = finalMessage;
+
                 const model = isDeepThought ? 'deepseek-reasoner' : 'deepseek-chat';
-                const response = await sendMessageToDeepSeek(model, chatHistory);
+                const response = await sendMessageToDeepSeek(model, tempMessages);
                 
                 chatHistory.push({ role: "assistant", content: response });
                 StorageManager.saveCurrentSession();
@@ -453,6 +482,20 @@
             return data.choices[0].message.content;
         }
 
+        async function performWebSearch(query) {
+            const response = await fetch(`https://serpapi.com/search?q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}`);
+            const data = await response.json();
+            
+            return {
+                organic_results: data.organic_results?.slice(0, 3).map(result => ({
+                    title: result.title,
+                    snippet: result.snippet,
+                    link: result.link
+                })) || [],
+                answer_box: data.answer_box || null
+            };
+        }
+
         function appendMessage(role, content, isMarkdown = false) {
             const messageElement = document.createElement('div');
             messageElement.className = `message ${role}`;
@@ -482,6 +525,7 @@
                     historyPanel.classList.remove('active');
                 });
                 
+
                 li.querySelector('.delete-history').addEventListener('click', (e) => {
                     e.stopPropagation();
                     StorageManager.deleteSession(session.id);
