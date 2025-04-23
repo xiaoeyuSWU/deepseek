@@ -367,10 +367,13 @@
         newChatBtn.addEventListener('click', () => {
             StorageManager.saveCurrentSession();
             currentSessionId = Date.now().toString();
-            chatHistory = [{
-                role: "system",
-                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
-            }];
+            chatHistory = [
+            { role: "system", content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。" },
+            { role: "system", content: searchResults },
+            { role: "user", content: userMessage }
+            ];
+
+
             chatMessages.innerHTML = '';
             chatInput.value = '';
         });
@@ -405,8 +408,12 @@
             const userMessage = chatInput.value.trim();
             if (!userMessage) return;
 
-            chatHistory.push({ role: "user", content: userMessage });
-            appendMessage('user', userMessage);
+            // Fetch search results for the user query
+            const searchResults = await fetchSearchResults(userMessage); // Get results from the web
+            chatHistory.push({ role: "system", content: searchResults }); // Add search results to chat context
+            chatHistory.push({ role: "user", content: userMessage }); // Add user message to chat history
+            
+            appendMessage('user', userMessage); // Display user message
             chatInput.value = '';
 
             const loadingMessage = appendMessage('loading', 
@@ -432,6 +439,31 @@
                 chatHistory.pop();
             }
         }
+
+
+
+        async function fetchSearchResults(query) {
+            const serpApiKey = "b27c0c96e20059056e3e31d3fd6cb771647808901261673c658ef340df5bbfa2"; // 🔐真实密钥
+            const url = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&hl=zh-cn&gl=cn&api_key=${serpApiKey}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Log the data for debugging purposes
+                console.log(data);  // This is to inspect the structure of the API response
+                
+                // Extract the top 3 results
+                const results = data.organic_results?.slice(0, 3).map(r => `[${r.title}](${r.link})`) || ["未找到结果"];
+                return `### 🔎 来自网络的资料：\n${results.join('\n')}`;
+            } catch (error) {
+                console.error("搜索出错", error);
+                return "⚠️ 搜索失败，继续用已有内容回答。";
+            }
+        }
+
+
+
 
         async function sendMessageToDeepSeek(model, messages) {
             const apiKey = 'sk-b485211331ef4dc69505fca300bbc5e9';
