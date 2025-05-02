@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DeepSeek智能助手@SWU</title>
+    <title>DeepSeek智能助手——李博远@swu</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.6/marked.min.js"></script>
     <style>
         :root {
@@ -14,6 +14,7 @@
             --card-bg: #ffffff;
         }
 
+
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
@@ -23,6 +24,28 @@
             height: 100vh;
             background: var(--bg-color);
             color: #1e293b;
+            position: relative;
+            z-index: 0;
+        }
+        html, body {
+            height: 100%;
+            overflow-x: hidden; /* 禁止横向滚动 */
+        }
+        /* 新增：固定全屏背景图层 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100%;
+            background-image: url('xiaomai.png');  /* 确保 xiaomai.png 与 HTML 文件同目录 */
+            background-size: cover;                /* 铺满全屏 */
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;          /* 固定在视口 */
+            opacity: 0.8;                           /* 透明度 0.8 */
+            pointer-events: none;                  /* 不阻塞点击 */
+            z-index: -1;                            /* 置于所有内容之下 */
         }
 
         .heart-animation {
@@ -80,6 +103,67 @@
             white-space: nowrap;
         }
 
+        /* “？”帮助按钮 —— 跟发送按钮同级但更小 */
+        #help-button {
+            /* 去掉 padding:0 */
+            padding: 0.75rem;        /* 与 send-button 同级别的内边距 */
+            /* 改为最小宽高，可根据需要放大 */
+            min-width: 2.5rem;       
+            min-height: 2.5rem;      
+            font-size: 1.25rem;      
+            line-height: 1;          
+            flex-shrink: 0;          /* 禁止在 flex 容器中被压扁 */
+            /* 其余原有样式保持 */
+            text-align: center;
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: background 0.2s;
+        }
+
+        /* 弹窗蒙层 */
+        #help-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;           /* 默认隐藏 */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        #help-modal .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 90%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-align: center;
+            line-height: 1.6;
+            text-align: left;
+
+        }
+        #help-modal .modal-content p {
+            margin-bottom: 1.5rem;
+            color: #334155;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+        #help-modal .modal-content button {
+            display: block;         /* 让按钮成为块级元素 */
+            margin: 1rem auto 0;    /* 上方留 1rem，下方 0，左右自动居中 */
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+
         #new-chat {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -101,18 +185,20 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
-            padding: 1rem;
-            max-width: 800px;
             margin: 0 auto;
             width: 100%;
-            padding-top: 70px; /* 顶部导航栏高度 */
+            max-width: 800px;
+            padding-top: 70px;
             padding-bottom: 120px;
+            padding-left: 0;   /* ✅ 添加 */
+            padding-right: 0;  /* ✅ 添加 */
         }
+
 
         #chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem;
+            padding: 1rem 0;   /* 修改为上下1rem，左右0 */
             scroll-behavior: smooth;
             background: var(--card-bg);
             border-radius: 16px;
@@ -120,40 +206,38 @@
             margin-bottom: 1rem;
             padding-bottom: 60px;
         }
+
         
         .message {
-            margin: 0.4rem 0;
+            clear: both;                      /* 每条消息独占一行 */
+            max-width: calc(100% - 4rem);     /* 保证左右各 2rem 空白 */
             padding: 0.8rem 1.2rem;
             border-radius: 1.25rem;
-            width: fit-content;
-            max-width: min(78%, 600px);
-            min-width: 60px;
-            line-height: 1.5;
-            font-size: 0.95rem;
             word-break: break-word;
-            overflow-wrap: anywhere;
-            display: block; /* 关键修改 */
-            animation: fadeIn 0.3s ease-in;
-            position: relative;
-        }
+            margin-block: 0.4rem;             /* 上下间距 0.4rem */
+            }
 
-
-
-        .message.user {
+            .message.user {
+            float: right;
+            margin-right: 2rem;               /* 右侧空隙 */
+            margin-left: 2rem;                /* 左侧空隙，防止消息太长时直接顶到左边 */
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            margin-left: auto;
             border-bottom-right-radius: 4px;
-        }
+            }
 
-        .message.bot {
+            .message.bot {
+            float: left;
+            margin-left: 2rem;                /* 左侧空隙 */
+            margin-right: 2rem;               /* 右侧空隙 */
             background: var(--card-bg);
             color: #334155;
-            margin-right: auto;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
             border-bottom-left-radius: 4px;
-        }
+            }
+
+
+
 
         @media (max-width: 640px) {
             .message {
@@ -173,6 +257,9 @@
         }
 
         .message.loading {
+            float: left;               /* 跟 AI 消息一样靠左 */
+            margin-left: 2rem;         /* 左侧空隙 */
+            margin-right: 2rem;        /* 右侧空隙 */
             background: #f8fafc;
             color: #64748b;
             width: fit-content;
@@ -181,10 +268,13 @@
             gap: 0.5rem;
         }
 
+
         .loading-dots {
             display: inline-flex;
             gap: 0.25rem;
+            align-items: center;    /* 新增：垂直居中对齐文字和点 */
         }
+
 
         .loading-dots span {
             width: 6px;
@@ -196,6 +286,8 @@
 
         #chat-input-container {
             display: flex;
+            align-items: center;   /* 新增 */
+
             gap: 0.75rem;
             padding: 1rem;
             background: var(--card-bg);
@@ -208,6 +300,7 @@
             max-width: 800px;
             margin: 0 auto;
             z-index: 100;
+            
         }
 
         #chat-input {
@@ -298,6 +391,16 @@
             0%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-6px); }
         }
+
+        #chat-container,
+        #chat-messages,
+        #chat-input-container,
+        #top-nav {
+            background-color: transparent !important;
+            backdrop-filter: blur(0.01px);
+            -webkit-backdrop-filter: blur(0.01px); /* 兼容 Safari */
+        }
+
     </style>
 </head>
 <body>
@@ -306,7 +409,7 @@
             <button class="nav-button" id="new-chat">🆕 新会话</button>
             <button class="nav-button" id="show-history">📜 历史记录</button>
         </div>
-        <button class="nav-button" id="deep-thought-button">✨ 深度思考模式 R1</button>
+        <button class="nav-button" id="deep-thought-button">✨ 深度思考</button>
     </div>
 
     <div id="history-panel">
@@ -322,9 +425,26 @@
     </div>
     
     <div id="chat-input-container">
-        <input type="text" id="chat-input" placeholder="键入消息...(更多功能开发中)">
+        <input type="text" id="chat-input" placeholder="键入消息...">
+        <!-- 新增的帮助按钮 -->
+        <button class="nav-button" id="help-button" title="帮助">?</button>
         <button id="send-button">发送</button>
     </div>
+
+    <!-- 帮助弹窗 -->
+    <div id="help-modal">
+        <div class="modal-content">
+            <p>
+                我是 DeepSeek，很高兴见到你！🤖<br>
+                我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~😊
+            </p>
+              
+              
+        <button id="modal-close">我知道了👌</button>
+        </div>
+    </div>
+  
+    
 
     <script>
         const StorageManager = {
@@ -368,7 +488,7 @@
         let chatHistory = [
             {
                 role: "system",
-                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
+                content: "你使用友善、活泼、简洁易懂的语气进行交流，回答清晰直接。回答必须使用Markdown格式，并适当加入两三个emoji增加亲和力。"
             }
         ];
         let currentSessionId = Date.now().toString();
@@ -389,19 +509,28 @@
         newChatBtn.addEventListener('click', () => {
             StorageManager.saveCurrentSession();
             currentSessionId = Date.now().toString();
-            chatHistory = [{
-                role: "system",
-                content: "你使用友善、活泼且简洁易懂且带有emoji的语言交流。请注意你的回答必须是markdown格式。"
-            }];
             chatMessages.innerHTML = '';
             chatInput.value = '';
+
+            chatHistory = [
+                {
+                    role: "system",
+                    content: "你使用友善、活泼、简洁易懂的语气进行交流，回答清晰直接。回答必须使用Markdown格式，并适当加入两三个emoji增加亲和力。"
+                },
+                {
+                    role: "assistant",
+                    content: "我是 DeepSeek，很高兴见到你！我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~"
+                }
+            ];
+            appendMessage('bot', "我是 DeepSeek，很高兴见到你！我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~", false);
         });
+
 
         deepThoughtButton.addEventListener('click', () => {
             isDeepThought = !isDeepThought;
             deepThoughtButton.textContent = isDeepThought 
                 ? '🚀 深度思考已激活' 
-                : '✨ 深度思考模式 R1';
+                : '✨ 深度思考';
         });
 
         showHistoryBtn.addEventListener('click', () => {
@@ -529,11 +658,17 @@
             if (sessions.length > 0) {
                 loadSession(sessions[0]); // 加载最新会话
             }
+
+            // 始终显示欢迎语
+            const welcomeMessage = "我是 DeepSeek，很高兴见到你！我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~";
+            chatHistory.push({ role: "assistant", content: welcomeMessage });
+            appendMessage('bot', welcomeMessage, false); // 不使用 Markdown
         });
+
 
         document.addEventListener('click', (e) => {
             // 心形符号库
-            const hearts = ['❤️', '🧡', '💛', '💚', '💙', '💜'];
+            const hearts = ['🌾', '🌽', '🍅', '🧑‍🌾', '🥬', '🥕', '🍐', '🍆', '🥔'];
             
             // 创建心形元素
             const heart = document.createElement('div');
@@ -552,7 +687,33 @@
             
             // 自动清理
             setTimeout(() => heart.remove(), 4000);
+
+            // 打开弹窗
+            document.getElementById('help-button')
+            .addEventListener('click', () => {
+                document.getElementById('help-modal').style.display = 'flex';
+            });
+
+            // 关闭弹窗
+            document.getElementById('modal-close')
+            .addEventListener('click', () => {
+                document.getElementById('help-modal').style.display = 'none';
+            });
+
         });
+
+
+
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+        document.addEventListener('gesturechange', function (e) {
+            e.preventDefault();
+        });
+        document.addEventListener('gestureend', function (e) {
+            e.preventDefault();
+        });
+
 
 
     </script>
