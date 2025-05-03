@@ -525,13 +525,13 @@
             appendMessage('bot', "我是 DeepSeek，很高兴见到你！我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~", false);
         });
 
-
         deepThoughtButton.addEventListener('click', () => {
             isDeepThought = !isDeepThought;
             deepThoughtButton.textContent = isDeepThought 
-                ? '🚀 深度思考已激活' 
-                : '✨ 深度思考';
+                ? '🚀 深度思考已激活'  // 按钮文本显示已激活
+                : '✨ 深度思考';  // 切换按钮显示文本
         });
+
 
         showHistoryBtn.addEventListener('click', () => {
             historyPanel.classList.toggle('active');
@@ -568,7 +568,8 @@
             );
 
             try {
-                const model = isDeepThought ? 'deepseek-reasoner' : 'deepseek-chat';
+                // 始终调用普通模型 deepseek-chat
+                const model = 'deepseek-chat';  // 确保这里始终使用 deepseek-chat 模型
                 const response = await sendMessageToDeepSeek(model, chatHistory);
                 
                 chatHistory.push({ role: "assistant", content: response });
@@ -583,6 +584,7 @@
                 chatHistory.pop();
             }
         }
+
 
         async function sendMessageToDeepSeek(model, messages) {
             const apiKey = 'sk-b485211331ef4dc69505fca300bbc5e9';
