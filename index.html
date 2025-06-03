@@ -76,6 +76,7 @@
             transition: var(--transition);
             z-index: 100;
             box-shadow: var(--shadow);
+            position: relative;
         }
 
         .dark-mode .sidebar {
@@ -289,6 +290,7 @@
             display: flex;
             flex-direction: column;
             background-color: var(--light);
+            position: relative;
         }
 
         .dark-mode .main-content {
@@ -368,6 +370,7 @@
             overflow-y: auto;
             position: relative;
             background-color: var(--light);
+            height: calc(100vh - 160px); /* 调整高度以适应输入区域 */
         }
 
         .dark-mode .chat-container {
@@ -436,6 +439,7 @@
             display: flex;
             flex-direction: column;
             gap: 25px;
+            height: 100%;
         }
 
         .message {
@@ -517,6 +521,8 @@
             background-color: var(--card-light);
             border-top: 1px solid var(--border-light);
             box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 10;
         }
 
         .dark-mode .input-container {
@@ -747,10 +753,11 @@
         /* 响应式设计 */
         @media (max-width: 768px) {
             .sidebar {
-                position: absolute;
+                position: fixed;
                 left: -280px;
                 height: 100%;
                 box-shadow: var(--shadow-lg);
+                z-index: 1000;
             }
             
             .sidebar.active {
@@ -763,6 +770,10 @@
             
             .message {
                 max-width: 90%;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 180px); /* 调整移动端聊天容器高度 */
             }
         }
 
