@@ -48,7 +48,7 @@
             background-color: var(--bg-light);
             color: var(--text-light);
             transition: var(--transition);
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
             font-size: 15px;
             line-height: 1.5;
@@ -370,7 +370,6 @@
             overflow-y: auto;
             position: relative;
             background-color: var(--light);
-            height: calc(100vh - 160px); /* 调整高度以适应输入区域 */
         }
 
         .dark-mode .chat-container {
@@ -439,7 +438,6 @@
             display: flex;
             flex-direction: column;
             gap: 25px;
-            height: 100%;
         }
 
         .message {
@@ -770,10 +768,6 @@
             
             .message {
                 max-width: 90%;
-            }
-            
-            .chat-container {
-                height: calc(100vh - 180px); /* 调整移动端聊天容器高度 */
             }
         }
 
