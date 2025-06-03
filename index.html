@@ -48,7 +48,7 @@
             background-color: var(--bg-light);
             color: var(--text-light);
             transition: var(--transition);
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden;
             font-size: 15px;
             line-height: 1.5;
@@ -163,7 +163,21 @@
             justify-content: space-between;
             gap: 10px;
             transition: var(--transition);
+            overflow: hidden; /* Prevent content overflow */
         }
+        .conversation-item .left-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1; /* Allow text to take space */
+            min-width: 0; /* Prevent overflow issues with flex */
+        }
+        .conversation-item .left-content span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis for long titles */
+        }
+
 
         .conversation-item:hover {
             background-color: var(--light-gray);
@@ -179,37 +193,41 @@
             font-weight: 500;
         }
 
-        .conversation-item .left-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .conversation-item i {
+        .conversation-item i { /* General icon styling in item */
             font-size: 14px;
             color: var(--gray);
+            flex-shrink: 0; /* Prevent icon from shrinking */
         }
-
-        .conversation-item.active i {
+        .conversation-item.active .left-content i { /* Icon in active item */
             color: var(--primary);
         }
+        .conversation-item .conversation-actions i { /* Ellipsis icon */
+             color: var(--gray);
+        }
+        .conversation-item:hover .conversation-actions i,
+        .conversation-item.active .conversation-actions i {
+            color: var(--primary); /* Ellipsis icon on hover/active */
+        }
+
 
         .conversation-actions {
             opacity: 0;
             transition: var(--transition);
+            flex-shrink: 0; /* Prevent actions button from shrinking */
         }
 
-        .conversation-item:hover .conversation-actions {
+        .conversation-item:hover .conversation-actions,
+        .conversation-item.active .conversation-actions { /* Show actions on hover or if active */
             opacity: 1;
         }
 
         .conversation-menu {
-            position: absolute;
+            position: fixed; /* Use fixed for reliable positioning */
             background-color: var(--card-light);
             border-radius: var(--radius);
             box-shadow: var(--shadow-lg);
             padding: 8px 0;
-            z-index: 100;
+            z-index: 1000; /* Ensure menu is on top */
             display: none;
             width: 180px;
         }
@@ -219,12 +237,13 @@
         }
 
         .menu-item {
-            padding: 8px 15px;
+            padding: 10px 15px; /* Increased padding for better touch */
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
             transition: var(--transition);
+            font-size: 14px;
         }
 
         .menu-item:hover {
@@ -234,10 +253,29 @@
         .dark-mode .menu-item:hover {
             background-color: var(--dark-2);
         }
+        .menu-item i {
+            font-size: 14px;
+            color: var(--gray);
+            width: 16px; /* Align icons */
+            text-align: center;
+        }
+        .menu-item:hover i {
+            color: var(--primary);
+        }
 
         .menu-item.delete {
             color: #ff4d4f;
         }
+        .menu-item.delete i {
+            color: #ff4d4f;
+        }
+        .menu-item.delete:hover {
+            background-color: rgba(255, 77, 79, 0.1);
+        }
+         .menu-item.delete:hover i {
+            color: #ff4d4f;
+        }
+
 
         .conversation-tags {
             padding: 15px;
@@ -279,6 +317,9 @@
             background-color: var(--primary);
             color: white;
         }
+        .tag.active i {
+            color: white;
+        }
 
         .tag i {
             font-size: 12px;
@@ -291,6 +332,7 @@
             flex-direction: column;
             background-color: var(--light);
             position: relative;
+            overflow: hidden; /* Prevent main content from causing scrollbars */
         }
 
         .dark-mode .main-content {
@@ -306,11 +348,17 @@
             border-bottom: 1px solid var(--border-light);
             background-color: var(--card-light);
             z-index: 5;
+            flex-shrink: 0; /* Prevent shrinking */
         }
 
         .dark-mode .top-nav {
             background-color: var(--card-dark);
             border-bottom: 1px solid var(--border-dark);
+        }
+        .left-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .nav-controls {
@@ -366,8 +414,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
+            padding: 0px 20px 20px 20px; /* Removed top padding, handled by messages-container */
+            overflow-y: hidden; /* Let messages-container handle scroll */
             position: relative;
             background-color: var(--light);
         }
@@ -376,13 +424,14 @@
             background-color: var(--dark);
         }
 
-        .chat-header {
+        .chat-header { /* This was removed from original HTML, keeping style if needed elsewhere */
             padding: 15px 0;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
         }
 
         .dark-mode .chat-header {
@@ -402,12 +451,12 @@
             font-size: 16px;
         }
 
-        .chat-actions {
+        .chat-actions { /* This was removed from original HTML */
             display: flex;
             gap: 10px;
         }
 
-        .chat-action-btn {
+        .chat-action-btn { /* This was removed from original HTML */
             background: none;
             border: none;
             color: var(--gray);
@@ -434,7 +483,7 @@
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 0;
+            padding: 20px 5px 20px 0; /* Added padding right for scrollbar */
             display: flex;
             flex-direction: column;
             gap: 25px;
@@ -454,7 +503,7 @@
 
         .message.user {
             align-self: flex-end;
-            flex-direction: row-reverse; /* 调整用户消息的布局顺序 */
+            flex-direction: row-reverse;
         }
 
         .message-avatar {
@@ -466,7 +515,7 @@
             justify-content: center;
             flex-shrink: 0;
             font-weight: 600;
-            margin-top: 5px;
+            margin-top: 5px; /* Aligns better with bubble start */
         }
 
         .message.user .message-avatar {
@@ -476,12 +525,13 @@
 
         .message.ai .message-avatar {
             background-color: var(--light-gray);
-            color: var(--primary);
+            color: var(--primary); /* Changed for better contrast */
         }
-
         .dark-mode .message.ai .message-avatar {
             background-color: var(--dark-2);
+            color: var(--accent); /* Changed for better contrast in dark mode */
         }
+
 
         .message-content {
             padding: 16px 20px;
@@ -489,7 +539,17 @@
             position: relative;
             box-shadow: var(--shadow);
             line-height: 1.6;
+            word-break: break-word; /* Ensure long words break */
         }
+        .message.error-message .message-content {
+            background-color: #ffebee; /* Light red for errors */
+            color: #c62828; /* Darker red text for errors */
+        }
+        .dark-mode .message.error-message .message-content {
+            background-color: #5c1a1a;
+            color: #ffcdd2;
+        }
+
 
         .message.user .message-content {
             background-color: var(--user-bubble);
@@ -512,6 +572,31 @@
             background-color: var(--ai-bubble-dark);
             color: var(--text-dark);
         }
+        .message-actions {
+            text-align: right;
+            margin-top: 8px;
+        }
+        .message-actions .copy-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .message-actions .copy-btn:hover {
+            color: var(--primary);
+            background-color: rgba(0,0,0,0.05);
+        }
+        .dark-mode .message-actions .copy-btn {
+            color: var(--dark-gray);
+        }
+        .dark-mode .message-actions .copy-btn:hover {
+            color: var(--accent);
+            background-color: rgba(255,255,255,0.05);
+        }
+
 
         /* 输入区域 */
         .input-container {
@@ -521,6 +606,7 @@
             box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
             position: relative;
             z-index: 10;
+            flex-shrink: 0; /* Prevent shrinking */
         }
 
         .dark-mode .input-container {
@@ -539,8 +625,13 @@
             border-radius: var(--radius);
             color: var(--primary);
             font-weight: 500;
-            animation: slideDown 0.3s ease;
+            animation: slideDown 0.3s ease; /* slideDown animation needs to be defined */
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
 
         .dark-mode .thinking-mode-indicator {
             background-color: rgba(67, 97, 238, 0.2);
@@ -572,10 +663,13 @@
             border-radius: var(--radius);
             border: 1px solid var(--border-light);
             resize: none;
-            height: 60px;
+            min-height: 60px; /* Use min-height for better initial rendering */
+            max-height: 150px; /* Allow some expansion */
             transition: var(--transition);
             font-size: 15px;
             box-shadow: var(--shadow);
+            line-height: 1.5; /* Ensure text is not cramped */
+            overflow-y: auto; /* Add scroll for longer input */
         }
 
         .dark-mode .message-input {
@@ -604,9 +698,10 @@
             font-size: 20px;
             transition: var(--transition);
             box-shadow: var(--shadow);
+            flex-shrink: 0; /* Prevent button from shrinking */
         }
 
-        .send-button:hover {
+        .send-button:hover:not(:disabled) {
             background: linear-gradient(135deg, var(--primary-light), var(--secondary));
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(67, 97, 238, 0.25);
@@ -614,10 +709,16 @@
 
         .send-button:disabled {
             background: var(--light-gray);
+            color: var(--gray);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
+        .dark-mode .send-button:disabled {
+            background: var(--dark-gray);
+            color: var(--gray);
+        }
+
 
         .thinking-toggle {
             display: flex;
@@ -636,11 +737,11 @@
         }
 
         .thinking-toggle:hover {
-            background-color: var(--light);
+            background-color: var(--light); /* Slightly lighter on hover */
         }
 
         .dark-mode .thinking-toggle:hover {
-            background-color: var(--dark);
+            background-color: var(--dark); /* Slightly lighter on hover */
         }
 
         .toggle-label {
@@ -699,7 +800,7 @@
             transform: translateX(26px);
         }
 
-        /* API密钥输入 */
+        /* API密钥输入 - Not used in current JS logic, but kept for CSS completeness */
         .api-key-container {
             padding: 10px 15px;
             background-color: var(--light-gray);
@@ -752,40 +853,61 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: -280px;
+                left: -280px; /* Initially hidden */
                 height: 100%;
                 box-shadow: var(--shadow-lg);
-                z-index: 1000;
+                z-index: 1000; /* Ensure sidebar is on top when active */
             }
             
             .sidebar.active {
                 left: 0;
             }
             
-            .menu-toggle {
-                display: block;
+            .menu-toggle { /* Hamburger menu button */
+                display: block; /* Show on mobile */
             }
             
             .message {
-                max-width: 90%;
+                max-width: 95%; /* Slightly more width for messages on mobile */
+            }
+            
+            /* Adjustments for smaller screens if input area becomes too cramped */
+            .input-container {
+                padding: 15px;
+            }
+            .message-input {
+                padding: 12px 15px;
+                min-height: 50px;
+            }
+            .send-button {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+            .thinking-toggle {
+                padding: 8px 12px;
+                margin-top: 10px;
             }
         }
 
-        .menu-toggle {
-            display: none;
+        .menu-toggle { /* Hamburger menu button */
+            display: none; /* Hidden by default, shown in media query */
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 22px;
             color: var(--gray);
             cursor: pointer;
-            margin-right: 15px;
+            padding: 8px; /* Add some padding for easier tap */
+            border-radius: 50%;
+        }
+        .menu-toggle:hover {
+            background-color: var(--light-gray);
+            color: var(--primary);
+        }
+        .dark-mode .menu-toggle:hover {
+            background-color: var(--dark-2);
         }
 
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
-            }
-        }
 
         .ai-typing {
             display: flex;
@@ -793,7 +915,10 @@
             gap: 8px;
             color: var(--gray);
             font-size: 14px;
-            margin-top: 5px;
+            /* margin-top: 5px; Removed as it's inside message content now */
+        }
+        .dark-mode .ai-typing {
+            color: var(--dark-gray);
         }
 
         .typing-dot {
@@ -804,18 +929,18 @@
             display: inline-block;
             animation: typing 1.4s infinite ease-in-out both;
         }
-
-        .typing-dot:nth-child(1) {
-            animation-delay: -0.32s;
+        .dark-mode .typing-dot {
+            background-color: var(--dark-gray);
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: -0.16s;
-        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        /* Third dot is handled by the base animation delay */
 
         @keyframes typing {
             0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+            40% { transform: scale(1.0); }
         }
 
         .empty-state {
@@ -832,15 +957,15 @@
         .empty-state i {
             font-size: 48px;
             margin-bottom: 15px;
-            color: var(--light-gray);
+            color: var(--light-gray); /* Lighter icon for empty state */
         }
 
         .dark-mode .empty-state i {
-            color: var(--dark-gray);
+            color: var(--dark-gray); /* Darker icon for empty state in dark mode */
         }
 
         .empty-state h3 {
-            font-size: 18px;
+            font-size: 20px; /* Slightly larger heading */
             margin-bottom: 10px;
             color: var(--text-light);
         }
@@ -852,12 +977,12 @@
         .empty-state p {
             max-width: 400px;
             line-height: 1.6;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- 侧边栏 -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
@@ -871,8 +996,7 @@
             </button>
             
             <div class="conversation-list">
-                <!-- 初始为空，用户可以创建对话 -->
-            </div>
+                </div>
             
             <div class="conversation-tags">
                 <h3>标签分类</h3>
@@ -884,9 +1008,7 @@
             </div>
         </div>
         
-        <!-- 主内容区 -->
         <div class="main-content">
-            <!-- 顶部导航 -->
             <div class="top-nav">
                 <div class="left-nav">
                     <button class="menu-toggle">
@@ -906,7 +1028,6 @@
                 </div>
             </div>
             
-            <!-- 聊天区域 -->
             <div class="chat-container">
                 <div class="messages-container" id="messagesContainer">
                     <div class="empty-state">
@@ -917,7 +1038,6 @@
                 </div>
             </div>
             
-            <!-- 输入区域 -->
             <div class="input-container">
                 <div class="thinking-mode-indicator" id="thinkingIndicator" style="display: none;">
                     <i class="fas fa-brain"></i>
@@ -925,18 +1045,16 @@
                 </div>
                 
                 <div class="thinking-controls" id="thinkingControls" style="display: none;">
-                    <!-- 深度思考模式控制面板已隐藏 -->
-                </div>
+                    </div>
                 
                 <div class="input-area">
-                    <textarea class="message-input" placeholder="输入消息..." id="messageInput"></textarea>
+                    <textarea class="message-input" placeholder="输入消息 (Shift + Enter 换行)..." id="messageInput"></textarea>
                     <button class="send-button" id="sendButton" disabled>
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
                 
-                <div class="thinking-toggle" id="thinkingToggle">
-                    <div class="toggle-label">
+                <div class="thinking-toggle" id="thinkingToggleContainer"> <div class="toggle-label">
                         <i class="fas fa-brain"></i> 
                         <span>深度思考模式</span>
                     </div>
@@ -949,18 +1067,17 @@
         </div>
     </div>
 
-    <!-- 对话操作菜单 -->
     <div class="conversation-menu" id="conversationMenu">
-        <div class="menu-item add-to-favorite" data-tag="收藏">
+        <div class="menu-item add-tag" data-tag="收藏">
             <i class="fas fa-star"></i> 添加到收藏
         </div>
-        <div class="menu-item add-to-work" data-tag="工作">
+        <div class="menu-item add-tag" data-tag="工作">
             <i class="fas fa-briefcase"></i> 添加到工作
         </div>
-        <div class="menu-item add-to-study" data-tag="学习">
+        <div class="menu-item add-tag" data-tag="学习">
             <i class="fas fa-book"></i> 添加到学习
         </div>
-        <div class="menu-item add-to-important" data-tag="重要">
+        <div class="menu-item add-tag" data-tag="重要">
             <i class="fas fa-exclamation-circle"></i> 添加到重要
         </div>
         <div class="menu-item delete">
@@ -969,610 +1086,529 @@
     </div>
 
     <script>
-        // 主题切换功能
-        const themeToggle = document.getElementById('themeToggle');
+        // DOM Elements
+        const themeToggleBtn = document.getElementById('themeToggle');
         const body = document.body;
-        
-        // 检查本地存储中的主题设置
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            body.classList.add('dark-mode');
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            
-            if (body.classList.contains('dark-mode')) {
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                localStorage.setItem('theme', 'light');
-            }
-        });
-        
-        // 深度思考模式切换
         const deepThinkingToggle = document.getElementById('deepThinkingToggle');
         const thinkingIndicator = document.getElementById('thinkingIndicator');
-        const thinkingControls = document.getElementById('thinkingControls');
-        
-        deepThinkingToggle.addEventListener('change', () => {
-            if (deepThinkingToggle.checked) {
-                thinkingIndicator.style.display = 'flex';
-                thinkingControls.style.display = 'none'; // 保持隐藏
-            } else {
-                thinkingIndicator.style.display = 'none';
-                thinkingControls.style.display = 'none';
-            }
-        });
-        
-        // 发送消息功能
+        // const thinkingControls = document.getElementById('thinkingControls'); // Not used
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const messagesContainer = document.getElementById('messagesContainer');
-        
-        // 定义API密钥
-        const API_KEY = 'sk-b485211331ef4dc69505fca300bbc5e9';
-        const API_URL = 'https://api.deepseek.com/v1/chat/completions';
-        
-        // 跟踪当前对话
-        let currentConversation = null;
-        let isNewConversation = true;
-        
-        // 对话菜单相关
+        const conversationListContainer = document.querySelector('.conversation-list');
         const conversationMenu = document.getElementById('conversationMenu');
-        let currentConversationItem = null;
+        const newChatBtn = document.querySelector('.new-chat-btn');
+        const mainChatTitle = document.querySelector('.top-nav .chat-title span');
+        const sidebar = document.querySelector('.sidebar');
+        const menuToggleBtn = document.querySelector('.menu-toggle');
+
+        // API Configuration
+        const API_KEY = 'sk-b485211331ef4dc69505fca300bbc5e9'; // Hardcoded API Key
+        const API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+        // App State
+        let currentConversationId = null; // Using ID for robustness, title can be display only
+        let isNewConversation = true;
+        let currentConversationMenuItem = null; // For context menu target
+
+        // --- UTILITY FUNCTIONS ---
+        function scrollToBottom() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateId() {
+            return `conv_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        }
         
-        // 初始化对话列表
-        function initConversationList() {
-            const conversationList = document.querySelector('.conversation-list');
-            conversationList.innerHTML = '';
-            
-            // 获取所有对话
-            const conversations = Object.keys(localStorage)
-                .filter(key => key.startsWith('conversation_'))
-                .map(key => key.replace('conversation_', ''));
-            
-            if (conversations.length === 0) {
-                // 没有对话时显示空状态
-                return;
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') return '';
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+
+        // --- THEME TOGGLE ---
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.classList.remove('dark-mode');
+                themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
             }
+        }
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(savedTheme);
+        themeToggleBtn.addEventListener('click', () => {
+            const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+
+        // --- DEEP THINKING TOGGLE ---
+        deepThinkingToggle.addEventListener('change', () => {
+            thinkingIndicator.style.display = deepThinkingToggle.checked ? 'flex' : 'none';
+        });
+
+        // --- MESSAGE DISPLAY ---
+        function displayMessage(text, isUser, avatarChar = 'AI', isError = false) {
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            if (emptyState) emptyState.style.display = 'none';
+
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', isUser ? 'user' : 'ai');
+            if (isError) messageDiv.classList.add('error-message');
             
-            // 添加对话项
-            conversations.forEach(title => {
-                const newItem = document.createElement('div');
-                newItem.className = 'conversation-item';
-                newItem.innerHTML = `
-                    <div class="left-content">
-                        <i class="fas fa-comment"></i>
-                        <span>${title}</span>
-                    </div>
-                    <div class="conversation-actions">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </div>
-                `;
-                
-                // 添加点击事件
-                newItem.addEventListener('click', () => {
-                    document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
-                    newItem.classList.add('active');
-                    const chatTitle = document.querySelector('.chat-title span');
-                    chatTitle.textContent = title;
-                    
-                    currentConversation = title;
-                    isNewConversation = false;
-                    
-                    if (window.innerWidth <= 768) {
-                        document.querySelector('.sidebar').classList.remove('active');
-                    }
-                    
-                    // 加载对话历史
-                    loadConversation(title);
-                });
-                
-                // 添加三个点的点击事件
-                const actionsButton = newItem.querySelector('.conversation-actions');
-                actionsButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); // 阻止事件冒泡到对话项
-                    
-                    // 记录当前对话项
-                    currentConversationItem = newItem;
-                    
-                    // 显示菜单
-                    const rect = actionsButton.getBoundingClientRect();
-                    conversationMenu.style.display = 'block';
-                    conversationMenu.style.left = `${rect.right}px`;
-                    conversationMenu.style.top = `${rect.top}px`;
-                    
-                    // 防止菜单被点击关闭
-                    e.stopPropagation();
-                });
-                
-                conversationList.appendChild(newItem);
-            });
-            
-            // 如果有对话，默认选择第一个
-            if (conversations.length > 0 && !currentConversation) {
-                const firstItem = conversationList.querySelector('.conversation-item');
-                if (firstItem) {
-                    firstItem.click();
+            const formattedText = escapeHtml(text).replace(/\n/g, '<br>');
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${escapeHtml(avatarChar)}</div>
+                <div class="message-content">
+                    ${formattedText}
+                    ${!isUser && !isError ? `
+                        <div class="message-actions">
+                            <button class="copy-btn" title="复制"><i class="fas fa-copy"></i></button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+
+            if (!isUser && !isError) {
+                const copyBtn = messageDiv.querySelector('.copy-btn');
+                if (copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = text; // Original text, not HTML escaped one
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                            setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                            // Could show a small modal/toast message here for failure
+                        }
+                        document.body.removeChild(textArea);
+                    });
+                }
+            }
+            scrollToBottom();
+        }
+
+        function showAiTyping(show) {
+            let typingIndicatorElement = messagesContainer.querySelector('.ai-typing-indicator');
+            if (show) {
+                if (!typingIndicatorElement) {
+                    const emptyState = messagesContainer.querySelector('.empty-state');
+                    if (emptyState) emptyState.style.display = 'none';
+
+                    typingIndicatorElement = document.createElement('div');
+                    typingIndicatorElement.className = 'message ai ai-typing-indicator';
+                    typingIndicatorElement.innerHTML = `
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <div class="ai-typing">
+                                <span>AI正在输入</span>
+                                <span class="typing-dot"></span>
+                                <span class="typing-dot"></span>
+                                <span class="typing-dot"></span>
+                            </div>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(typingIndicatorElement);
+                }
+                typingIndicatorElement.style.display = 'flex';
+                scrollToBottom();
+            } else {
+                if (typingIndicatorElement) {
+                    typingIndicatorElement.remove();
                 }
             }
         }
         
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
-            
-            // 如果是新对话，使用第一条消息作为标题
-            if (isNewConversation) {
-                const shortTitle = message.length > 20 ? message.substring(0, 20) + '...' : message;
-                createNewConversation(shortTitle);
-                isNewConversation = false;
+        function checkEmptyState() {
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            const hasMessages = messagesContainer.querySelectorAll('.message:not(.ai-typing-indicator)').length > 0;
+
+            if (hasMessages) {
+                if (emptyState) emptyState.style.display = 'none';
+            } else {
+                if (!emptyState) { // If empty state was removed, re-add it
+                    messagesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <h3>开始新的对话</h3>
+                            <p>点击侧边栏的"新对话"按钮或直接在下方输入框发送消息开始对话</p>
+                        </div>`;
+                } else {
+                     emptyState.style.display = 'flex';
+                }
             }
-            
-            // 添加用户消息
-            addMessage(message, 'user');
+        }
+
+
+        // --- LOCALSTORAGE CONVERSATION MANAGEMENT ---
+        function getConversationMeta(id) {
+            return JSON.parse(localStorage.getItem(`meta_${id}`) || '{}');
+        }
+        function saveConversationMeta(id, meta) {
+            localStorage.setItem(`meta_${id}`, JSON.stringify(meta));
+        }
+        function getConversationMessages(id) {
+            return JSON.parse(localStorage.getItem(`chat_${id}`) || '[]');
+        }
+        function saveConversationMessages(id, messages) {
+            localStorage.setItem(`chat_${id}`, JSON.stringify(messages));
+        }
+        function addMessageToConversation(id, role, content) {
+            if (!id) return;
+            const messages = getConversationMessages(id);
+            messages.push({ role, content, timestamp: Date.now() });
+            saveConversationMessages(id, messages);
+
+            let meta = getConversationMeta(id);
+            meta.timestamp = Date.now(); // Update timestamp for sorting
+            if (!meta.title && role === 'user' && messages.length === 1) { // Set title from first user message
+                 meta.title = content.substring(0, 40) + (content.length > 40 ? '...' : '');
+            }
+            saveConversationMeta(id, meta);
+        }
+
+        // --- SIDEBAR & CONVERSATION LIST ---
+        function createConversationDOMItem(id, meta) {
+            const item = document.createElement('div');
+            item.className = 'conversation-item';
+            item.dataset.id = id;
+            item.innerHTML = `
+                <div class="left-content">
+                    <i class="fas fa-comment"></i>
+                    <span>${escapeHtml(meta.title) || '新对话'}</span>
+                </div>
+                <div class="conversation-actions">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            `;
+
+            item.addEventListener('click', () => {
+                loadConversation(id);
+                if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            const actionsButton = item.querySelector('.conversation-actions');
+            actionsButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentConversationMenuItem = item;
+                const rect = actionsButton.getBoundingClientRect();
+                conversationMenu.style.display = 'block';
+                
+                let menuLeft = rect.left;
+                let menuTop = rect.bottom + 2; // Add small offset
+
+                // Adjust if menu goes off-screen
+                const menuWidth = conversationMenu.offsetWidth;
+                const menuHeight = conversationMenu.offsetHeight;
+
+                if (menuLeft + menuWidth > window.innerWidth) {
+                    menuLeft = window.innerWidth - menuWidth - 5; // 5px padding from edge
+                }
+                if (menuTop + menuHeight > window.innerHeight) {
+                    menuTop = rect.top - menuHeight - 2;
+                }
+                 if (menuLeft < 0) menuLeft = 5;
+                 if (menuTop < 0) menuTop = 5;
+
+
+                conversationMenu.style.left = `${menuLeft}px`;
+                conversationMenu.style.top = `${menuTop}px`;
+            });
+            return item;
+        }
+
+        function refreshConversationList(activeFilterTag = '全部') {
+            conversationListContainer.innerHTML = '';
+            const keys = Object.keys(localStorage);
+            let conversations = [];
+            keys.forEach(key => {
+                if (key.startsWith('meta_')) {
+                    const id = key.replace('meta_', '');
+                    const meta = getConversationMeta(id);
+                    if (meta.title) { // Only list if it has a title (meaning it's not an empty new chat)
+                         conversations.push({ id, ...meta });
+                    }
+                }
+            });
+
+            conversations.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            conversations.forEach(conv => {
+                // Filter logic
+                let show = false;
+                if (activeFilterTag === '全部') {
+                    show = true;
+                } else {
+                    if (conv.tags && conv.tags.includes(activeFilterTag)) {
+                        show = true;
+                    }
+                }
+
+                if (show) {
+                    const item = createConversationDOMItem(conv.id, conv);
+                    conversationListContainer.appendChild(item);
+                    if (conv.id === currentConversationId) {
+                        item.classList.add('active');
+                    }
+                }
+            });
+        }
+        
+        function updateConversationItemTitle(id, newTitle) {
+            const item = conversationListContainer.querySelector(`.conversation-item[data-id="${id}"] .left-content span`);
+            if (item) {
+                item.textContent = escapeHtml(newTitle);
+            }
+        }
+
+
+        // --- CHAT ACTIONS ---
+        function handleNewChat() {
+            currentConversationId = null; 
+            isNewConversation = true;
+            messagesContainer.innerHTML = ''; // Clear messages
+            mainChatTitle.textContent = '新对话';
             messageInput.value = '';
             sendButton.disabled = true;
             
-            // 显示AI正在输入
-            showTypingIndicator();
+            document.querySelectorAll('.conversation-item.active').forEach(i => i.classList.remove('active'));
+            checkEmptyState();
+            messageInput.focus();
+            if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        }
+
+        function loadConversation(id) {
+            const meta = getConversationMeta(id);
+            if (!meta.title) { // Should not happen if list is built correctly
+                handleNewChat();
+                return;
+            }
+
+            currentConversationId = id;
+            isNewConversation = false;
+            mainChatTitle.textContent = escapeHtml(meta.title);
+            messagesContainer.innerHTML = ''; // Clear previous messages
+
+            const messages = getConversationMessages(id);
+            messages.forEach(msg => {
+                displayMessage(msg.content, msg.role === 'user', msg.role === 'user' ? 'U' : 'AI');
+            });
             
+            document.querySelectorAll('.conversation-item.active').forEach(i => i.classList.remove('active'));
+            const activeItem = conversationListContainer.querySelector(`.conversation-item[data-id="${id}"]`);
+            if (activeItem) activeItem.classList.add('active');
+
+            checkEmptyState();
+            scrollToBottom(); // Scroll after messages are loaded
+            messageInput.focus();
+        }
+
+        async function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (!messageText) return;
+
+            displayMessage(messageText, true, 'U'); // Display user message
+
+            if (isNewConversation) {
+                currentConversationId = generateId();
+                isNewConversation = false;
+                let newTitle = messageText.substring(0, 40) + (messageText.length > 40 ? '...' : '');
+                
+                // Ensure title uniqueness (basic check, can be improved)
+                let tempTitle = newTitle;
+                let counter = 1;
+                const allMetas = Object.keys(localStorage).filter(k => k.startsWith('meta_')).map(k => getConversationMeta(k.replace('meta_','')));
+                while(allMetas.some(m => m.title === tempTitle)) {
+                    tempTitle = `${newTitle} (${counter++})`;
+                }
+                newTitle = tempTitle;
+
+                saveConversationMeta(currentConversationId, { title: newTitle, timestamp: Date.now(), tags: [] });
+                mainChatTitle.textContent = escapeHtml(newTitle);
+                refreshConversationList(document.querySelector('.conversation-tags .tag.active').dataset.tag); // Refresh to add new item and make active
+                // Ensure new item is marked active
+                const activeItem = conversationListContainer.querySelector(`.conversation-item[data-id="${currentConversationId}"]`);
+                if (activeItem) activeItem.classList.add('active');
+
+            } else {
+                 // Update title if it was a placeholder "New Chat"
+                let meta = getConversationMeta(currentConversationId);
+                if (!meta.title || meta.title === "新对话") {
+                    meta.title = messageText.substring(0, 40) + (messageText.length > 40 ? '...' : '');
+                    saveConversationMeta(currentConversationId, meta);
+                    mainChatTitle.textContent = escapeHtml(meta.title);
+                    updateConversationItemTitle(currentConversationId, meta.title);
+                }
+            }
+            
+            addMessageToConversation(currentConversationId, 'user', messageText);
+            const conversationHistory = getConversationMessages(currentConversationId);
+
+            messageInput.value = '';
+            sendButton.disabled = true;
+            showAiTyping(true);
+
             try {
-                // 构建请求参数
-                const requestOptions = {
+                const modelToUse = deepThinkingToggle.checked ? 'deepseek-reasoner' : 'deepseek-chat';
+                const apiMessages = conversationHistory.map(msg => ({ role: msg.role, content: msg.content }));
+                // Limit history to avoid overly long payloads, e.g., last 10 messages (5 pairs)
+                const historyLimit = 20; // More messages for better context
+                const truncatedApiMessages = apiMessages.slice(-historyLimit);
+
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${API_KEY}`
                     },
                     body: JSON.stringify({
-                        // 根据深度思考模式选择模型
-                        model: deepThinkingToggle.checked ? 'deepseek-reasoner' : 'deepseek-chat',
-                        messages: [
-                            {role: 'user', content: message}
-                        ],
-                        temperature: 0.7,
-                        max_tokens: 2000
+                        model: modelToUse,
+                        messages: truncatedApiMessages,
                     })
-                };
-                
-                // 发送请求到DeepSeek API
-                const response = await fetch(API_URL, requestOptions);
-                
+                });
+
+                showAiTyping(false);
+
                 if (!response.ok) {
-                    throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    displayMessage(`API错误: ${errorData.error?.message || response.statusText}`, false, 'AI', true);
+                    return;
                 }
-                
+
                 const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-                
-                // 移除输入指示器并添加AI响应
-                removeTypingIndicator();
-                addMessage(aiResponse, 'ai');
-                
-                // 保存对话历史
-                saveConversation();
-                
-            } catch (error) {
-                removeTypingIndicator();
-                addMessage(`抱歉，处理您的请求时出错: ${error.message}`, 'ai');
-                console.error('API请求错误:', error);
-            } finally {
-                sendButton.disabled = false;
-                messageInput.focus();
-            }
-        }
-        
-        function createNewConversation(title) {
-            currentConversation = title;
-            
-            // 更新聊天标题
-            document.querySelector('.chat-title span').textContent = title;
-            
-            // 创建新对话项
-            const conversationList = document.querySelector('.conversation-list');
-            
-            // 检查是否已有该对话
-            const existingItem = Array.from(conversationList.querySelectorAll('.conversation-item'))
-                .find(item => item.querySelector('span').textContent === title);
-            
-            if (!existingItem) {
-                const newItem = document.createElement('div');
-                newItem.className = 'conversation-item';
-                newItem.innerHTML = `
-                    <div class="left-content">
-                        <i class="fas fa-comment"></i>
-                        <span>${title}</span>
-                    </div>
-                    <div class="conversation-actions">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </div>
-                `;
-                
-                // 添加点击事件
-                newItem.addEventListener('click', () => {
-                    document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
-                    newItem.classList.add('active');
-                    const chatTitle = document.querySelector('.chat-title span');
-                    chatTitle.textContent = title;
-                    
-                    currentConversation = title;
-                    isNewConversation = false;
-                    
-                    if (window.innerWidth <= 768) {
-                        document.querySelector('.sidebar').classList.remove('active');
-                    }
-                    
-                    // 加载对话历史
-                    loadConversation(title);
-                });
-                
-                // 添加三个点的点击事件
-                const actionsButton = newItem.querySelector('.conversation-actions');
-                actionsButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); // 阻止事件冒泡到对话项
-                    
-                    // 记录当前对话项
-                    currentConversationItem = newItem;
-                    
-                    // 显示菜单
-                    const rect = actionsButton.getBoundingClientRect();
-                    conversationMenu.style.display = 'block';
-                    conversationMenu.style.left = `${rect.right}px`;
-                    conversationMenu.style.top = `${rect.top}px`;
-                    
-                    // 防止菜单被点击关闭
-                    e.stopPropagation();
-                });
-                
-                // 添加到对话列表
-                conversationList.insertBefore(newItem, conversationList.firstChild);
-                
-                // 激活新对话
-                document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
-                newItem.classList.add('active');
-            }
-            
-            // 清空聊天内容
-            messagesContainer.innerHTML = '';
-        }
-        
-        function addMessage(content, sender) {
-            // 隐藏空状态
-            document.querySelector('.empty-state')?.remove();
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'message-avatar';
-            
-            if (sender === 'user') {
-                avatarDiv.textContent = 'U';
-            } else {
-                avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
-            }
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            
-            // 处理代码块和格式化
-            contentDiv.innerHTML = formatMessageContent(content);
-            
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(contentDiv);
-            
-            messagesContainer.appendChild(messageDiv);
-            
-            // 滚动到底部
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-        
-        function formatMessageContent(content) {
-            // 简单的Markdown格式化
-            // 处理代码块
-            content = content.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-            // 处理单行代码
-            content = content.replace(/`([^`]+)`/g, '<code>$1</code>');
-            // 处理粗体
-            content = content.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-            // 处理斜体
-            content = content.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-            // 处理链接
-            content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-            // 处理换行
-            content = content.replace(/\n/g, '<br>');
-            
-            return content;
-        }
-        
-        function showTypingIndicator() {
-            // 显示AI正在输入
-            const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'message ai';
-            typingIndicator.id = 'typingIndicator';
-            typingIndicator.innerHTML = `
-                <div class="message-avatar">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="message-content">
-                    <div class="ai-typing">
-                        <span>DeepSeek AI 正在思考</span>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                </div>
-            `;
-            
-            messagesContainer.appendChild(typingIndicator);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-        
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-        
-        sendButton.addEventListener('click', sendMessage);
-        
-        messageInput.addEventListener('input', () => {
-            sendButton.disabled = messageInput.value.trim() === '';
-        });
-        
-        messageInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        
-        // 移动端菜单切换
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-        
-        // 点击侧边栏外部关闭菜单（移动端）
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && 
-                !sidebar.contains(e.target) && 
-                !menuToggle.contains(e.target)) {
-                sidebar.classList.remove('active');
-            }
-            
-            // 点击其他地方关闭对话菜单
-            if (!conversationMenu.contains(e.target) && !e.target.classList.contains('conversation-actions')) {
-                conversationMenu.style.display = 'none';
-            }
-        });
-        
-        // 新对话按钮点击事件
-        document.querySelector('.new-chat-btn').addEventListener('click', () => {
-            // 创建新对话
-            document.querySelector('.chat-title span').textContent = '新对话';
-            messagesContainer.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-comments"></i>
-                    <h3>开始新的对话</h3>
-                    <p>在下方输入框发送消息开始对话</p>
-                </div>
-            `;
-            
-            // 清除当前对话
-            currentConversation = null;
-            isNewConversation = true;
-            
-            // 取消所有对话项的活跃状态
-            document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
-        });
-        
-        // 保存对话历史
-        function saveConversation() {
-            if (!currentConversation) return;
-            
-            const messages = [];
-            
-            document.querySelectorAll('.message').forEach(msg => {
-                const sender = msg.classList.contains('user') ? 'user' : 'ai';
-                const content = msg.querySelector('.message-content').textContent;
-                messages.push({sender, content});
-            });
-            
-            localStorage.setItem(`conversation_${currentConversation}`, JSON.stringify(messages));
-        }
-        
-        // 加载对话历史
-        function loadConversation(chatTitle) {
-            const messages = JSON.parse(localStorage.getItem(`conversation_${chatTitle}`) || '[]');
-            
-            messagesContainer.innerHTML = '';
-            
-            if (messages.length === 0) {
-                messagesContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-comments"></i>
-                        <h3>开始对话</h3>
-                        <p>在下方输入框发送消息开始与 DeepSeek AI 的对话</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            messages.forEach(msg => {
-                addMessage(msg.content, msg.sender);
-            });
-        }
-        
-        // 过滤对话
-        function filterConversations(tag) {
-            // 移除所有对话项
-            const conversationList = document.querySelector('.conversation-list');
-            conversationList.innerHTML = '';
-            
-            // 获取所有对话
-            const conversations = Object.keys(localStorage)
-                .filter(key => key.startsWith('conversation_'))
-                .map(key => key.replace('conversation_', ''));
-            
-            // 根据标签过滤对话
-            // 实际应用中可以为对话添加标签，这里简化处理
-            let filteredConversations = conversations;
-            
-            if (tag !== '全部') {
-                // 获取标签对应的对话
-                const taggedConversations = JSON.parse(localStorage.getItem('tagged_conversations') || '{}');
-                const taggedWithThisTag = taggedConversations[tag] || [];
-                
-                filteredConversations = conversations.filter(convo => taggedWithThisTag.includes(convo));
-            }
-            
-            // 添加过滤后的对话项
-            filteredConversations.forEach(title => {
-                const newItem = document.createElement('div');
-                newItem.className = 'conversation-item';
-                newItem.innerHTML = `
-                    <div class="left-content">
-                        <i class="fas fa-comment"></i>
-                        <span>${title}</span>
-                    </div>
-                    <div class="conversation-actions">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </div>
-                `;
-                
-                // 添加点击事件
-                newItem.addEventListener('click', () => {
-                    document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
-                    newItem.classList.add('active');
-                    const chatTitle = document.querySelector('.chat-title span');
-                    chatTitle.textContent = title;
-                    
-                    currentConversation = title;
-                    isNewConversation = false;
-                    
-                    if (window.innerWidth <= 768) {
-                        document.querySelector('.sidebar').classList.remove('active');
-                    }
-                    
-                    // 加载对话历史
-                    loadConversation(title);
-                });
-                
-                // 添加三个点的点击事件
-                const actionsButton = newItem.querySelector('.conversation-actions');
-                actionsButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); // 阻止事件冒泡到对话项
-                    
-                    // 记录当前对话项
-                    currentConversationItem = newItem;
-                    
-                    // 显示菜单
-                    const rect = actionsButton.getBoundingClientRect();
-                    conversationMenu.style.display = 'block';
-                    conversationMenu.style.left = `${rect.right}px`;
-                    conversationMenu.style.top = `${rect.top}px`;
-                    
-                    // 防止菜单被点击关闭
-                    e.stopPropagation();
-                });
-                
-                conversationList.appendChild(newItem);
-            });
-        }
-        
-        // 对话标签点击事件
-        const tags = document.querySelectorAll('.tag');
-        tags.forEach(tag => {
-            tag.addEventListener('click', () => {
-                // 移除所有标签的活跃状态
-                tags.forEach(t => t.classList.remove('active'));
-                // 添加当前标签的活跃状态
-                tag.classList.add('active');
-                
-                // 过滤对话
-                filterConversations(tag.textContent.trim());
-            });
-        });
-        
-        // 对话菜单操作
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', () => {
-                if (!currentConversationItem) return;
-                
-                const title = currentConversationItem.querySelector('span').textContent;
-                
-                if (item.classList.contains('delete')) {
-                    // 删除对话
-                    if (confirm(`确定要删除对话"${title}"吗？`)) {
-                        localStorage.removeItem(`conversation_${title}`);
-                        
-                        // 更新标签关联
-                        const taggedConversations = JSON.parse(localStorage.getItem('tagged_conversations') || '{}');
-                        Object.keys(taggedConversations).forEach(tag => {
-                            taggedConversations[tag] = taggedConversations[tag].filter(convo => convo !== title);
-                        });
-                        localStorage.setItem('tagged_conversations', JSON.stringify(taggedConversations));
-                        
-                        // 从UI中移除
-                        currentConversationItem.remove();
-                        
-                        // 如果删除的是当前对话，重置
-                        if (currentConversation === title) {
-                            document.querySelector('.chat-title span').textContent = '新对话';
-                            messagesContainer.innerHTML = `
-                                <div class="empty-state">
-                                    <i class="fas fa-comments"></i>
-                                    <h3>开始新的对话</h3>
-                                    <p>点击侧边栏的"新对话"按钮或直接在下方输入框发送消息开始对话</p>
-                                </div>
-                            `;
-                            
-                            currentConversation = null;
-                            isNewConversation = true;
-                        }
-                    }
+                const aiMessageText = data.choices[0]?.message?.content;
+
+                if (aiMessageText) {
+                    displayMessage(aiMessageText, false, 'AI');
+                    addMessageToConversation(currentConversationId, 'assistant', aiMessageText);
                 } else {
-                    // 添加到标签
-                    const tag = item.getAttribute('data-tag');
-                    
-                    // 获取已有的标签关联
-                    const taggedConversations = JSON.parse(localStorage.getItem('tagged_conversations') || '{}');
-                    
-                    // 确保标签存在
-                    if (!taggedConversations[tag]) {
-                        taggedConversations[tag] = [];
-                    }
-                    
-                    // 添加对话到标签
-                    if (!taggedConversations[tag].includes(title)) {
-                        taggedConversations[tag].push(title);
-                    }
-                    
-                    // 保存更新
-                    localStorage.setItem('tagged_conversations', JSON.stringify(taggedConversations));
-                    
-                    // 提示用户
-                    alert(`已将对话"${title}"添加到"${tag}"分类`);
+                    displayMessage('未能获取AI回复。请检查API密钥或模型配置。', false, 'AI', true);
                 }
-                
-                // 关闭菜单
-                conversationMenu.style.display = 'none';
+            } catch (error) {
+                showAiTyping(false);
+                console.error('Fetch Error:', error);
+                displayMessage(`网络或请求错误: ${error.message}`, false, 'AI', true);
+            } finally {
+                sendButton.disabled = messageInput.value.trim().length === 0; // Re-evaluate send button
+                messageInput.focus();
+                 // Refresh sidebar to update timestamp order
+                refreshConversationList(document.querySelector('.conversation-tags .tag.active').dataset.tag);
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshConversationList();
+            handleNewChat(); // Start with a new chat interface
+
+            messageInput.addEventListener('input', () => {
+                sendButton.disabled = messageInput.value.trim().length === 0;
+                // Auto-resize textarea
+                messageInput.style.height = 'auto';
+                messageInput.style.height = (messageInput.scrollHeight) + 'px';
+            });
+
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!sendButton.disabled) {
+                        sendMessage();
+                    }
+                }
+            });
+
+            sendButton.addEventListener('click', sendMessage);
+            newChatBtn.addEventListener('click', handleNewChat);
+
+            // Mobile menu toggle
+            menuToggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                    const isClickInsideSidebar = sidebar.contains(event.target);
+                    const isClickOnMenuToggle = menuToggleBtn.contains(event.target);
+                    if (!isClickInsideSidebar && !isClickOnMenuToggle) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+            
+            // Conversation Menu Actions
+            document.querySelectorAll('.conversation-menu .add-tag').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (currentConversationMenuItem) {
+                        const convId = currentConversationMenuItem.dataset.id;
+                        const tag = item.dataset.tag;
+                        let meta = getConversationMeta(convId);
+                        if (!meta.tags) meta.tags = [];
+                        if (!meta.tags.includes(tag)) {
+                            meta.tags.push(tag);
+                            saveConversationMeta(convId, meta);
+                            // console.log(`Tag '${tag}' added to '${meta.title}'`);
+                            refreshConversationList(document.querySelector('.conversation-tags .tag.active').dataset.tag);
+                        }
+                        conversationMenu.style.display = 'none';
+                    }
+                });
+            });
+
+            document.querySelector('.conversation-menu .delete').addEventListener('click', () => {
+                if (currentConversationMenuItem) {
+                    const convId = currentConversationMenuItem.dataset.id;
+                    // Optional: Add a confirmation dialog here
+                    // if (confirm(`确定要删除对话 "${getConversationMeta(convId).title}" 吗?`)) {
+                        localStorage.removeItem(`chat_${convId}`);
+                        localStorage.removeItem(`meta_${convId}`);
+                        refreshConversationList(document.querySelector('.conversation-tags .tag.active').dataset.tag);
+                        if (currentConversationId === convId) {
+                            handleNewChat();
+                        }
+                    // }
+                    conversationMenu.style.display = 'none';
+                }
+            });
+
+            // Global click to hide conversation menu
+            document.addEventListener('click', (e) => {
+                if (conversationMenu.style.display === 'block' && 
+                    !conversationMenu.contains(e.target) && 
+                    (!currentConversationMenuItem || !currentConversationMenuItem.querySelector('.conversation-actions').contains(e.target))) {
+                    conversationMenu.style.display = 'none';
+                }
+            });
+
+            // Tag Filtering
+            const tagButtons = document.querySelectorAll('.conversation-tags .tag');
+            tagButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tagButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    refreshConversationList(button.dataset.tag);
+                });
             });
         });
-        
-        // 初始设置
-        window.addEventListener('DOMContentLoaded', () => {
-            initConversationList();
-            messageInput.focus();
-        });
+
     </script>
 </body>
 </html>
