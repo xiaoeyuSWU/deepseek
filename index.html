@@ -39,7 +39,6 @@
             top: 1rem;
             left: 1rem;
             z-index: 1001;
-            padding: 0.75rem;
             width: 2.5rem;
             height: 2.5rem;
             font-size: 1.25rem;
@@ -51,6 +50,11 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: background 0.2s;
+            
+            /* 新增：使用flex布局使问号居中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* 弹窗蒙层 */
@@ -102,7 +106,6 @@
             position: relative;
             margin: 0 auto;
             width: 100%;
-            max-width: 800px;
             padding-top: 60px;
             padding-bottom: 100px;
         }
@@ -192,11 +195,13 @@
             bottom: 0;
             left: 0;
             right: 0;
-            max-width: 800px;
-            margin: 0 auto;
-            z-index: 100;
+            width: 100%;               /* ✅ 强制100%宽度 */
+            max-width: 100%;           /* ✅ 防止超出屏幕宽度 */
             box-sizing: border-box;
+            z-index: 100;
+            margin: 0 auto;
         }
+
 
         #chat-input {
             flex: 1;
