@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DeepSeek智能助手——李博远@swu</title>
+    <title>李博远@swu</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.6/marked.min.js"></script>
     <style>
         :root {
@@ -284,8 +284,9 @@
     <div id="help-modal">
         <div class="modal-content">
             <p>
-                我是 DeepSeek，很高兴见到你！🤖<br>
-                我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~😊
+                您好！我是李博远开发的，嵌入在他的个人网站内的基于DeepSeek的AI助手，很高兴见到你！🤖<br>
+                我更了解李博远，您可以试着问问我与他相关的问题哦。😊<br>
+                比如，您可以试着问我：“李博远有什么兴趣爱好？”，“你觉得李博远与他人不同的地方在哪里？”
             </p>
             <button id="modal-close">我知道了👌</button>
         </div>
@@ -453,7 +454,7 @@
         // 页面加载完成后初始化
         window.addEventListener('load', () => {
             // 显示欢迎消息
-            const welcomeMessage = "我是 DeepSeek，很高兴见到你！我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~";
+            const welcomeMessage = "您好！我是李博远开发的，嵌入在他的个人网站内的基于DeepSeek的AI助手，很高兴见到你！我更了解李博远，您可以试着问问我与他相关的问题哦。😊";
             chatHistory.push({ role: "assistant", content: welcomeMessage });
             appendMessage('bot', welcomeMessage, false);
         });
