@@ -106,6 +106,7 @@
             position: relative;
             margin: 0 auto;
             width: 100%;
+            max-width: 800px;
             padding-top: 60px;
             padding-bottom: 100px;
         }
@@ -195,13 +196,18 @@
             bottom: 0;
             left: 0;
             right: 0;
-            width: 100%;               /* ✅ 强制100%宽度 */
-            max-width: 100%;           /* ✅ 防止超出屏幕宽度 */
-            box-sizing: border-box;
-            z-index: 100;
+            max-width: 800px;
             margin: 0 auto;
+            z-index: 100;
+            box-sizing: border-box;
         }
 
+        /* 新的输入区域布局 */
+        .input-area {
+            display: flex;
+            width: 100%;
+            gap: 0.75rem;
+        }
 
         #chat-input {
             flex: 1;
@@ -212,6 +218,7 @@
             transition: all 0.2s ease;
             background: var(--bg-color);
             color: var(--text-color);
+            min-width: 0; /* 关键修复：允许输入框缩小 */
         }
 
         #chat-input:focus {
@@ -229,9 +236,8 @@
             cursor: pointer;
             font-weight: 500;
             transition: transform 0.1s ease, opacity 0.2s ease;
-            min-width: 64px;
+            min-width: 80px;
             white-space: nowrap;
-            margin-left: -5px; /* 左移5px */
         }
 
         #send-button:hover {
@@ -271,6 +277,35 @@
                 opacity: 0;
             }
         }
+
+        /* 新增窄屏媒体查询 */
+        @media (max-width: 480px) {
+            .input-area {
+                gap: 0.5rem;
+            }
+            
+            #chat-input {
+                padding: 0.75rem 1rem;
+            }
+            
+            #send-button {
+                padding: 0.75rem 1rem;
+                min-width: 70px;
+            }
+        }
+
+        /* 超窄屏优化 */
+        @media (max-width: 360px) {
+            #chat-input-container {
+                padding: 0.8rem;
+            }
+            
+            #send-button {
+                padding: 0.7rem 0.8rem;
+                min-width: 60px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -282,8 +317,10 @@
     </div>
     
     <div id="chat-input-container">
-        <input type="text" id="chat-input" placeholder="键入消息...">
-        <button id="send-button">发送</button>
+        <div class="input-area">
+            <input type="text" id="chat-input" placeholder="键入消息...">
+            <button id="send-button">发送</button>
+        </div>
     </div>
 
     <!-- 帮助弹窗 -->
